@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <!-- Moralis SDK code -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://unpkg.com/moralis/dist/moralis.js"></script>
+  </head>
+  <style>
+    div#content{
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 85%;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+  }
+
+  div.nft {
+    width: 24%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #eee;
+  }
+  </style>
+
+  <body>
+    <h1>Polygon NFT Demo</h1>
+    <div id="content"></div>
+
+    <input id="nftaddress" type="text">
+    <button onclick="getNFT()">Searcher</button>
+
+    <script>
+
+
+      // connect to Moralis server
+        Moralis.initialize("M8xUTlZxnBUbXHRsKACeMZ8kC0lQ7l34djLqE9HE");
+        Moralis.serverURL = "https://vprtlt2uupxr.usemoralis.com:2053/server";
+
+        async function getNFT(){
+            let address = document.getElementById('nftaddress').value;
+
+            const options = { 
+                chain: 'matic', 
+                address: address 
+            };
+            const polygonNFTs = await Moralis.Web3.getNFTs(options);
+            console.log(polygonNFTs);
+
+            //Loop over the array
+            polygonNFTs.forEach( e => {
+                let url = e.token_uri;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    
+                    let currentDiv = document.getElementById("content");
+                    let content = `
+                    <div class="nft">
+                        <p>${data.name}</p>
+                        <p>${data.description ? data.description : ""}</p>
+                        <img width=100 height=100 src="${data.image}"/>
+                    </div>
+                    `
+                    currentDiv.innerHTML += content;
+                })
+            })
+        }
+
+
+    </script>
+  </body>
+</html>
