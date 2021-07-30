@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <!-- Moralis SDK code -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://unpkg.com/moralis/dist/moralis.js"></script>
+  </head>
+  <body>
+    <h1>Application</h1>
+
+    <button onclick="login()" id="btn-login">Moralis Login</button>
+    <button id="btn-logout">Logout</button>
+
+    <script>
+        // connect to Moralis server
+        Moralis.initialize("APP ID");
+        Moralis.serverURL = "SERVER URL";
+
+        // Login with metamask and get the ethAddress
+        
+        login = async () => {
+            Moralis.Web3.authenticate().then(function (user) {
+                console.log(user.get('ethAddress'))
+            })
+        }
+
+        // Display the ERC20 Token Balances of an address
+        getBalances = async () => {
+
+            const options = { chain: 'eth', address: "0x3401ea5a8d91c5e3944962c0148b08ac4a77f153" }
+            const balances = await Moralis.Web3.getAllERC20(options);
+
+            console.log(balances);
+        }
+        getBalances();
+
+        // Display the NFTs of an address
+        
+        getNFTBalances = async () => {
+            // get NFTs for current user on Mainnet
+
+            const options = { chain: 'eth', address: '0x49e74e31787734c3543e99bfacd457cb8286b239' };
+            const userEthNFTs = await Moralis.Web3.getNFTs(options);
+            console.log(userEthNFTs);
+        }
+        getNFTBalances();
+    </script>
+  </body>
+</html>
