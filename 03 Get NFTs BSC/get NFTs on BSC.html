@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <!-- Moralis SDK code -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://unpkg.com/moralis/dist/moralis.js"></script>
+    <script src="bsc-nfts.js"></script>
+  </head>
+  <body>
+    <h1>BSC NFT Demo</h1>
+
+    <input id="inputAddress" type="text">
+    <button onclick="getNFT()">Search NFT</button>
+
+    <!-- <script>
+      // This code was moved to external .js file called bsc-nfts.js
+
+      // connect to Moralis server
+        Moralis.initialize("ENTER APP ID");
+        Moralis.serverURL = "YOUR SERVER ID";
+      
+      async function getNFT(){
+        let searchAddress = document.getElementById('inputAddress').value;
+      
+        // get BSC NFTs for address
+        const options = { chain: 'bsc', address: searchAddress };
+        const BSCNFTs = await Moralis.Web3.getNFTs(options);
+        console.log(BSCNFTs);
+      }
+    </script> -->
+  </body>
+</html>
+
