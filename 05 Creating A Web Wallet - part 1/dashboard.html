@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Hugo 0.87.0">
+  <title>The Wallet</title>
+
+  <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/dashboard/">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="dashboard.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+  <script src="https://npmcdn.com/moralis@0.0.42/dist/moralis.js"></script>
+
+  <!-- Custom styles for this template -->
+</head>
+
+<body>
+
+  <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">The Wallet</a>
+    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+      data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+    <div class="navbar-nav">
+      <div class="nav-item text-nowrap">
+        <a id="btn-logout" class="nav-link px-3" href="#">Sign out</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <div class="position-sticky pt-3">
+          <h3 class="text-center">Web3 API!</h3>
+          <ul class="nav flex-column">
+
+            <li id="get-transactions-link" class="nav-item">
+              <a class="nav-link">
+                <span data-feather="file"></span>
+                Transactions
+              </a>
+            </li>
+            <li class="nav-item">
+              <a id="get-balances-link" class="nav-link">
+                <span data-feather="shopping-cart"></span>
+                Balances
+              </a>
+            </li>
+            <li class="nav-item">
+              <a id="get-nfts-link" class="nav-link">
+                <span data-feather="users"></span>
+                NFTs
+              </a>
+            </li>
+          </ul>
+
+        </div>
+        <hr>
+        <h3 class="text-center">Transfers!</h3>
+        <div class="position-sticky pt-3">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a id="transfer-ETH" class="nav-link">
+                <span data-feather="file"></span>
+                Transfer ETH
+              </a>
+            </li>
+            <li class="nav-item">
+              <a id="transfer-ERC20" class="nav-link">
+                <span data-feather="shopping-cart"></span>
+                Transfer ERC20
+              </a>
+            </li>
+            <li class="nav-item">
+              <a id="transfer-nfts" class="nav-link">
+                <span data-feather="users"></span>
+                Transfer NFTs
+              </a>
+            </li>
+          </ul>
+
+        </div>
+      </nav>
+
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <h1 class="text-center">Moralis Web Wallet</h1>
+        <small>
+          <!-- <h2 class="text-center h4">(For Beginners)</h2> -->
+        </small>
+        <div id="starter">
+          <p class="text-center h5">
+            <------ Choose an option from the side menu!</p>
+        </div>
+        <div id="section1">
+          <div id="transactionsSection">
+            <h2>Transactions</h2>
+            <div class="the-buttons">
+              <button class="btn btn-primary col-md-4" id="btn-get-transactions">Get Transactions</button>
+              <button class="btn btn-primary col-md-4 clearButton" name="table-of-transactions">Clear
+                Transactions</button>
+            </div>
+            <div class="m-3 text-center h6">
+              <p>The transactions from this code come from the rinkeby chain. <br/>
+                 This means the links below will go off to the rinkeby etherscan.<br/>
+                 You can change the chain in the main.js file</p>
+            </div>
+            <div id="table-of-fransactions" class="table-responsive"></div>
+          </div>
+
+          <div id="balancesSection">
+            <h2>Native Balances</h2>
+            <div class="the-buttons">
+              <button class="btn btn-primary col-md-4" id="btn-get-native-balances">Get Native Balances</button>
+              <button class="btn btn-primary col-md-4 clearButton" name="userBalances">Clear Balances</button>
+            </div>
+            <div class="m-3 text-center h6">
+              <p>You can display more native balances by editing the main.js file, i'm currently only using the Ethereum, Ropsten & Rinkeby chains in this code.</p>
+            </div>
+            <div id="userBalances" class="table-responsive"></div>
+            <hr>
+            <h2>ERC20 Token Balance</h2>
+            <div class="the-buttons">
+              <button class="btn btn-primary col-md-4" id="btn-get-erc20-balances">Get ERC20 Balances</button>
+              <button class="btn btn-primary col-md-4 clearButton" name="otherBalances">Clear Balances</button>
+            </div>
+            <div class="m-3 text-center h6">
+              <p>The code will only display the balances from your rinkeby account.<br/>
+                 If you want to show balances from different chains, you will need to edit the main.js file.</p>
+            </div>
+            <div class="table-responsive">
+              <table class="table" id="ERC20BalanceTable">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Symbol</th>
+                    <th scope="col">Balance</th>
+                    <th scope="col">Decimals</th>
+                    <th scope="col">Contract Address</th>
+                  </tr>
+                </thead>
+                <tbody id="otherBalances">
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div id="nftSection">
+            <h2>NFTs</h2>
+            <div class="col-md-6">
+              <select id="nft-chain" class="form-select">
+                <option value="none" selected>Select a chain?</option>
+                <option value="eth">Ethereum Mainnet</option>
+                <option value="ropsten">Ropsten</option>
+                <option value="rinkeby">Rinkeby</option>
+              </select>
+            </div>
+            <div class="the-buttons">
+              <button class="btn btn-primary col-md-4" id="btn-get-nfts">Get NFTs</button>
+              <button class="btn btn-primary col-md-4 clearButton" name="tableOfNFTs">Clear NFTs</button>
+            </div>
+            <div class="m-3 text-center h6">
+              <p>The code has options for eth, ropsten & rinkey only.<br/>
+                However you can edit the dashboard.html and main.js file to include more chains.</p>
+            </div>
+            <div id="tableOfNFTs" class="table-responsive d-flex flex-wrap"></div>
+          </div>
+        </div>
+
+        <div id="section2">
+          <div class="container " id="transferETH">
+            <p> This function will allow you to transfer ETH between accounts.
+              Make sure your metamask is logged into the account and chain you want to use
+              If you are on the Rinkeby chain, this will be a Rinkeby transaction
+              If you are on the Ropsten chain, this will be a Ropsten transaction
+              If you are on the Ethereum Mainnet, this will be a mainnet transaction</p>
+            <h2>Transfer ETH</h2>
+            <div id="TransferETHSection" class="container">
+              <div class="form-group col-md-12">
+                <input type="number" step="0.01" class="form-control" id="amountOfETH"
+                  placeholder="How much ETH to transfer?">
+              </div>
+              <div class="form-group col-md-12">
+                <input type="text" class="form-control" id="addressToReceive" placeholder="Who gets the money?">
+                <small class="form-text text-muted">Please choose correctly to avoid losing your coins</small>
+              </div>
+              <button id="ETHTransferButton" type="submit" class="btn btn-primary">GoGoGo</button>
+            </div>
+            <p>Address to receive: 0xf67173BCD45c640C6a5573bE86fe267B3F9Fb65D</p>
+          </div>
+
+          <div id="transferERC20" class="col-md-12 ">
+            <h2>Transfer ERC20</h2>
+            <div class="m-3 text-center h6">
+              <p>You may want to play with how this page displays, but here's a quick start guide:<br/>
+                 - Click 'Get balances'<br/>
+                 - Click the Transfer button next to the token you want to transfer<br/>
+                 - Enter the 'amount of tokens' and the 'receiver address'<br/>
+                 - Hit GoGoGo</p>
+            </div>
+            <div class="d-flex">
+
+              <div id="TransferERC20Section" class="container col-md-6">
+                <div class="form-group col-md-12 mb-3">
+                  <label for="ERC20TransferAmount">How many ERC20 tokens would you like to transfer?</label>
+                  <input type="number" step="0.01" class="form-control" id="ERC20TransferAmount" placeholder="Eg: 1">
+                </div>
+                <div class="form-group col-md-12 mb-3">
+                  <label for="ERC20TransferAddress">Which address do you want to send the tokens to? </label>
+                  <input type="text" class="form-control" id="ERC20TransferAddress" placeholder="Receiver address">
+                </div>
+
+                <div class="form-group col-md-12 mb-3">
+                  <label for="ERC20TransferDecimals">How many decimals does the token you want to send have? </label>
+                  <input type="number" step="1" class="form-control" id="ERC20TransferDecimals"
+                    placeholder="Token decimals">
+                </div>
+                <div class="form-group col-md-12 mb-3">
+                  <label for="ERC20TransferContract">What's the ERC20 token contract address? </label>
+                  <input type="text" class="form-control" id="ERC20TransferContract"
+                    placeholder="Token contract address?">
+                </div>
+                <button id="ERC20TransferButton" type="submit" class="btn btn-primary col-md-12">GoGoGo</button>
+              </div>
+
+
+
+              <div class="container mt-3 col-md-6">
+                <a class="btn btn-secondary col-12" data-bs-toggle="collapse" href="#multiCollapseExample1"
+                  role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Unsure of contract address
+                  or decimals? Click me</a>
+                <div class="row">
+                  <div class="col-md-12 mt-3">
+                    <div class="collapse multi-collapse" id="multiCollapseExample1">
+                      <div>
+                        <p>Choose the chain you need (eg rinkeby, ropsten, matic) and choose the symbol (eg LINK, be
+                          warned that this is case sensitive).</p>
+                        <p>We will scan the tokens you have on that chain and retrieve the metadata and put it into the
+                          search for you.</p>
+                        <div class="form-group col-md-12">
+                          <input type="text" class="form-control" id="ERC20MetadataChain" placeholder="Token chain?">
+                        </div>
+                        <div class="form-group col-md-12">
+                          <input type="text" class="form-control" id="ERC20MetadataSymbol" placeholder="Token symbol?">
+                        </div>
+                      </div>
+                      <button id="ERC20MetadataSearch" type="submit" class="btn btn-secondary">Find Metadata</button>
+                      <div id="ERC20Metadata"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="container">
+              <div class="table-responsive">
+                <table class="table" id="transferERC20BalanceTable">
+                  <thead>
+                    <tr>
+                      <th scope="col">Name</th>
+                      <th scope="col">Symbol</th>
+                      <th scope="col">Balance</th>
+                      <th scope="col">Decimals</th>
+                      <th scope="col">Contract Address</th>
+                      <th scope="col">Transfer</th>
+                    </tr>
+                  </thead>
+                  <tbody id="transferERC20Balances">
+  
+                  </tbody>
+                </table>
+                <button id="transferERC20GetBalances" class="btn btn-secondary col-md-12">Get balances</button>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+
+        <div id="transferNFTs">
+          <h2>Transfer NFTs</h2>
+          <div class="form-group col-md-6">
+            <input type="text" class="form-control" id="nft-transfer-receiver" placeholder="Sending to?">
+          </div>
+          <div class="form-group col-md-6">
+            <input type="text" class="form-control" id="nft-transfer-amount" placeholder="Amount to send?">
+          </div>
+          <div class="form-group col-md-6">
+            <select class="form-select" aria-label="Default select example" id="nft-transfer-type">
+              <option selected>Choose the type</option>
+              <option value="erc1155">ERC1155</option>
+              <option value="erc721">ERC721</option>
+            </select>
+          </div>
+          <div class="form-group col-md-6">
+            <input type="text" class="form-control" id="nft-transfer-contract-address" placeholder="Contract Address">
+          </div>
+          <div class="form-group col-md-6">
+            <input type="text" class="form-control" id="nft-transfer-token-id" placeholder="Token id">
+          </div>
+          <button class="btn btn-primary col-md-6" id="btn-transfer-selected-nft">Transfer NFT</button>
+          <hr>
+          <button class="btn btn-secondary col-md-4" id="btn-get-transactions2">Get NFTs</button>
+          <!-- <button class="btn btn-primary col-md-4 clearButton" name="tableOfNFTs2">Clear NFTs</button> -->
+
+          <div id="tableOfNFTs2">
+            <div id="NFTtable2" class="d-flex flex-wrap"></div>
+          </div>
+        </div>
+
+    </div>
+  </div>
+  </main>
+  </div>
+  </div>
+
+
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
+    integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
+    integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
+    crossorigin="anonymous"></script>
+  <script src="dashboard.js"></script>
+  <script src="main.js"></script>
+</body>
+
+</html>
