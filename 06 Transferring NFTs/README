@@ -1,0 +1,29 @@
+Firstly, download all the files that you want, or fork this repository and open up either the index.html, dashboard.html or main.js files in your editor
+
+Then, initialise your own moralis server with the APP ID and the SERVER URL from the Moralis admin dashboard.
+
+Next, depending on how you host the application, you may need to change the loginPage and dashboard variables. For example, if you are just using the LiveServer extension then your full url would be something like this: "http://127.0.0.1:5501/index.html" that means the pathname would be "/index.html" and you therefore just leave the subdomain variable as "/"
+However, if you are hosting the application on a live domain, somewhere in a subdirectory, then you will need to put that into the subdomain variable. For example, if the full url was something like this: 
+https://somewebsite.co.uk/some-random-directory/another-directory/index.html, then the subdomain variable should be "/some-random-directory/another-directory/"
+
+If you find that the application is going into an infinite redirect loop, then you can simply delete [or comment out] this entire function:
+(function(){
+    // If they are NOT authenticated and NOT on the login page
+    if (Moralis.User.current() == null && window.location.pathname != loginPage) {
+        document.querySelector('body').style.display = 'none';
+        window.location.href = loginPage;
+    }
+    if (Moralis.User.current() != null && (window.location.pathname == loginPage || window.location.pathname == subdomain)) {
+        window.location.href = dashboard;
+    }
+})();
+
+Feel free to post any issues in the forum, or Moralis DAO
+
+FINALLY
+During the video, I did not feature the final part of the JS to show how to transfer the NFT with the newer click-the-nft-you-want-to-transfer feature.
+So that exists in this JS file and I would encourage you to try and understand what's happening with it. 
+
+Essentially, I am declaring some variables to use within the Moralis transferNFT function, then pulling in data from the app and using it
+
+If you have any issues, contact us on the forum or in the Moralis DAO on Discord
