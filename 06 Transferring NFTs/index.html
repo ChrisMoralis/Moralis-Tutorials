@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.87.0">
+    <title>The Login Component</title>
+    
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/sign-in/">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="signin.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://unpkg.com/moralis/dist/moralis.js"></script>
+
+  </head>
+  <body class="text-center">
+    
+<main class="form-signin">
+    <img class="mb-4" src="moralis.png" alt="" width="72" height="57">
+    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+    <p class="h4">You will need metamask installed in your browser to use this application</p>
+    <div class="form-floating">
+      <input type="text" class="form-control" id="user-username" placeholder="Username">
+      <label for="user-username">Username</label>
+    </div>
+    <div class="form-floating">
+      <input type="email" class="form-control" id="user-email" placeholder="name@example.com">
+      <label for="user-email">Email address</label>
+    </div>
+    <button id="btn-login" class="w-100 btn btn-lg btn-primary" type="submit">Login or Register</button>
+    <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
+  </main>
+    <script src="secret.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
+

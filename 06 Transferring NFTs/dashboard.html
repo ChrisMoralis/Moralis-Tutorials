@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head></head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/dashboard/">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="dashboard.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://npmcdn.com/moralis@0.0.51/dist/moralis.js"></script>
+  </head>
+
+  <body>
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">The Dashboard</a>
+      <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <input class="form-control form-control-dark" type="text" placeholder="Search" aria-label="Search">
+
+ 
+      <div class="navbar-nav">
+        <div class="nav-item text-nowrap">
+          <a id="btn-logout" class="nav-link px-3" href="#">Sign out</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+
+          
+          <h3 class="text-center">Transfers!</h3>
+          <div class="position-sticky pt-3">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a id="transfer-nfts" class="nav-link">
+                  <span data-feather="users"></span>
+                  Transfer NFTs
+                </a>
+              </li>
+            </ul>
+          </div>
+ 
+        </nav>
+
+        <main id="mainDiv" class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+
+
+          <div id="section2">
+
+            <div id="transferNFTs">
+              <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                  <h2>Transfer NFTs</h2>
+                </div>
+              </div>
+              
+              <div class="container">
+                <div class="form-group col-md-6">
+                  <select class="form-select" aria-label="Default select example" id="nft-transfer-type">
+                    <option selected>Type</option>
+                    <option value="erc1155">ERC1155</option>
+                    <option value="erc721">ERC721</option>
+                  </select>
+                </div>
+                <div class="form-group col-md-6">
+                  <input type="text" class="form-control" id="nft-transfer-receiver" placeholder="Receiver?">
+                </div>
+                <div class="form-group col-md-6">
+                  <input type="text" class="form-control" id="nft-transfer-contract-address" placeholder="Contract Address">
+                </div>
+                <div class="form-group col-md-6">
+                  <input type="text" class="form-control" id="nft-transfer-token-id" placeholder="Token id">
+                </div>
+                <div class="form-group col-md-6">
+                  <input type="text" class="form-control" id="nft-transfer-amount" placeholder="Amount?">
+                </div>
+                <button class="btn btn-primary col-md-6" id="btn-transfer-selected-nft">Transfer NFT</button>
+                <hr>
+                <div class="col-md-6 offset-md-3 my-3 d-flex justify-content-center">
+                  <select id="nft-chain2" class="form-select">
+                    <option value="empty" selected>Which chain?</option>
+                    <option value="eth">Ethereum Mainnet</option>
+                    <option value="ropsten">Ropsten</option>
+                    <option value="rinkeby">Rinkeby</option>
+                    <option value="goerli">Goerli </option>
+                    <option value="kovan">Kovan </option>
+                    <option value="bsc">Binance Smart Chain (main)</option>
+                    <option value="bsc testnet">Binance Smart Chain (test)</option>
+                    <option value="matic">Polygon (Matic) Mainnet</option>
+                    <option value="mumbai">Mumbai (Matic Testnet)</option>
+                  </select>
+                </div>
+                <button class="btn btn-secondary col-md-4" id="btn-get-transactions2">Get NFTs</button>
+                <!-- <button class="btn btn-primary col-md-4 clearButton" name="tableOfNFTs2">Clear NFTs</button> -->
+                <div id="tableOfNFTs2">
+                  <div id="NFTtable2" class="d-flex flex-wrap"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+
+        </main>
+      </div>
+    </div>
+
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
+      integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
+      crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
+      integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
+      crossorigin="anonymous"></script>
+    <script src="dashboard.js"></script>
+    <script src="secret.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>

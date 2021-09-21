@@ -1,0 +1,52 @@
+#mainDiv{
+  padding:0px!important;
+}
+
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+
+
+
+  a{
+    cursor: pointer;
+  }
+  .card.col-md-4.nfts {
+    cursor: pointer;
+}
+
+.card.col-md-4.nfts:hover {
+  transition: 1s;
+  box-shadow: rgb(4 17 29 / 25%) 0px 0px 8px 0px!important;
+  transition: all 0.1s ease 0s;
+  transform: translateY(-2px);
+}
+
+.the-buttons {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.card h5{
+  font-size:14px;
+}
+.card h6{
+  font-size:13px;
+}
+.card p{
+  font-size:11px;
+}
+
+#fiat-iframe{
+  display: none;
+}
