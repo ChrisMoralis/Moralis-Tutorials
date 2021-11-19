@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.87.0">
+    <title>The Dashboard</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/dashboard/">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="dashboard.css" rel="stylesheet">
+    <link href="dex-style.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <!-- <script src="https://unpkg.com/moralis/dist/moralis.js"></script> -->
+    <script src="https://npmcdn.com/moralis@0.0.51/dist/moralis.js"></script>
+
+
+    <!-- Custom styles for this template -->
+  </head>
+
+  <body>
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">The Dashboard</a>
+      <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <input id="search-bar" class="form-control form-control-dark col-md-3" type="text" placeholder="Search" aria-label="Search">
+
+        <div class="text-light nav-user-details">
+          <span id="userAddress">User address</span>
+        </div>
+        <div class="text-light nav-user-details">
+          <span id="currentNetwork">Network</span>
+        </div>
+      <div class="navbar-nav">
+        <div class="nav-item text-nowrap">
+          <a id="btn-logout" class="nav-link px-3" href="#">Sign out</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="mb-5">
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+          <div class="position-sticky pt-3">
+            <h3 id="web3apiTitle" class="text-center">Web3 API!</h3>
+            <ul class="nav flex-column">
+              <li id="get-transactions-link" class="nav-item">
+                <a class="nav-link data-toggle="collapse" data-target=".navbar-collapse"">
+                  <span data-feather="file"></span>
+                  Transaction History
+                </a>
+              </li>
+              <li class="nav-item">
+                <a id="get-balances-link" class="nav-link">
+                  <span data-feather="shopping-cart"></span>
+                  Your Token Balances
+                </a>
+              </li>
+              <li class="nav-item">
+                <a id="get-nfts-link" class="nav-link">
+                  <span data-feather="users"></span>
+                  Your NFTs
+                </a>
+              </li>
+            </ul>
+          </div>
+          <hr>
+          <h3 class="text-center">Transfers!</h3>
+          <div class="position-sticky pt-3">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a id="transfer-ETH" class="nav-link">
+                  <span data-feather="file"></span>
+                  Send ETH
+                </a>
+              </li>
+              <li class="nav-item">
+                <a id="transfer-ERC20" class="nav-link">
+                  <span data-feather="shopping-cart"></span>
+                  Send ERC20
+                </a>
+              </li>
+              <li class="nav-item">
+                <a id="transfer-nfts" class="nav-link">
+                  <span data-feather="users"></span>
+                  Transfer NFTs
+                </a>
+              </li>
+            </ul>
+          </div>
+          <hr>
+          <h3 class="text-center">New</h3>
+          <div class="position-sticky pt-3">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a id="portfolio-tracker" class="nav-link">
+                  <span data-feather="users"></span>
+                  Portfolio Tracker
+                </a>
+              </li>
+              <li class="nav-item">
+                <a id="buy-crypto" class="nav-link">
+                  <span data-feather="file"></span>
+                  Buy Crypto with Fiat
+                </a>
+              </li>
+              <li class="nav-item">
+                <a id="swap-tokens" class="nav-link">
+                  <span data-feather="shopping-cart"></span>
+                  Swap Tokens
+                </a>
+              </li>
+              <li class="nav-item">
+                <a id="webhook-alerts" class="nav-link">
+                  <span data-feather="shopping-cart"></span>
+                  Trading Alerts
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
+        <main id="mainDiv" class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+          <div id="section1">
+
+            <div id="transactionsSection">
+              <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                  <h2>Transactions</h2>
+                  <p>Choose the chain you wish to search for your transactions, then press 'Get Transaction' and we will return them for you here</p>
+                  <p>Be aware that the transaction and the block links will only work if your transactions were on the rinkeby chain. As an exercise, see if you can make the base url for the transactions/block dynamic, meaning that the url will update regardless of whether you select a different chain.</p>
+                </div>
+              </div>
+              <div class="container">
+                <div class="col-md-6 offset-md-3 my-3 d-flex justify-content-center">
+                  <select id="transactions-chain" class="form-select">
+                    <option selected>Which chain?</option>
+                    <option value="eth">Ethereum Mainnet</option>
+                    <option value="ropsten">Ropsten</option>
+                    <option value="rinkeby">Rinkeby</option>
+                    <option value="goerli">Goerli </option>
+                    <option value="kovan">Kovan </option>
+                    <option value="bsc">Binance Smart Chain (main)</option>
+                    <option value="bsc testnet">Binance Smart Chain (test)</option>
+                    <option value="matic">Polygon (Matic) Mainnet</option>
+                    <option value="mumbai">Mumbai (Matic Testnet)</option>
+                  </select>
+                </div>
+                <div class="the-buttons my-3">
+                  <button class="btn btn-primary col-md-4 mb-1" id="btn-get-transactions">Get Transactions</button>
+                  <button class="btn btn-primary col-md-4 mb-1 clearButton" name="tableOfTransactions">Clear
+                    Transactions</button>
+                </div>
+                <div id="tableOfTransactions" class="table-responsive"></div>
+              </div>
+            </div>
+
+            <div id="balancesSection">
+              <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                  <h2>Native & ERC20 Balances</h2>
+                  <h4>Not Mobile Responsive Yet</h4>
+                  <p>Choose whether you want to dispay your native balances (which will include Ether, various ETH testnets and BSC balances) or the current ERC-20 tokens that you hold.</p>
+                  <div class="the-buttons">
+                    <button class="btn btn-primary col-md-4" id="btn-get-native-balances">Get Native Balances</button>
+                    <button class="btn btn-primary col-md-4" id="btn-get-erc20-balances">Get ERC20 Balances</button>
+                    <!-- <button class="btn btn-primary col-md-4 clearButton" name="userBalances">Clear Balances</button> -->
+                  </div>
+                  <div class="the-buttons">
+                    <!-- <button class="btn btn-primary col-md-4 clearButton" name="otherBalances">Clear Balances</button> -->
+                  </div>
+                </div>
+              </div>
+              <div class="container">
+                <div class="accordion" id="accordionExample">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Native Token Balances
+                      </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                      <div class="accordion-body">
+                        <div id="userBalances" class="table-responsive"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        ERC-20 Token Balances
+                      </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                      <div class="accordion-body">
+                        <div class="table-responsive">
+                          <table class="table" id="ERC20BalanceTable">
+                            <thead>
+                              <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Symbol</th>
+                                <th scope="col">Balance</th>
+                                <th scope="col">Decimals</th>
+                                <th scope="col">Contract Address</th>
+                              </tr>
+                            </thead>
+                            <tbody id="otherBalances">
+          
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <h3>Native Token Balances</h3>
+                <div id="userBalances" class="table-responsive"></div>
+                <hr>
+                <h3>ERC20 Token Balances</h3>
+                <div class="table-responsive">
+                  <table class="table" id="ERC20BalanceTable">
+                    <thead>
+                      <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Symbol</th>
+                        <th scope="col">Balance</th>
+                        <th scope="col">Decimals</th>
+                        <th scope="col">Contract Address</th>
+                      </tr>
+                    </thead>
+                    <tbody id="otherBalances">
+  
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div id="nftSection">
+              <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                  <h2>Display Your NFTs</h2>
+                  <h4>Not Mobile Responsive Yet</h4>
+
+                  <p>Simply choose the chain you want us to search in and then click 'Get NFTs'.<br/>
+                  'Clear NFTs' will hide them. </p>
+
+                </div>
+              </div>
+              <div class="col-md-6 offset-md-3 my-3 d-flex justify-content-center">
+                <select id="nft-chain" class="form-select">
+                  <option selected>Which chain?</option>
+                  <option value="eth">Ethereum Mainnet</option>
+                  <option value="ropsten">Ropsten</option>
+                  <option value="rinkeby">Rinkeby</option>
+                  <option value="goerli">Goerli </option>
+                  <option value="kovan">Kovan </option>
+                  <option value="bsc">Binance Smart Chain (main)</option>
+                  <option value="bsc testnet">Binance Smart Chain (test)</option>
+                  <option value="matic">Polygon (Matic) Mainnet</option>
+                  <option value="mumbai">Mumbai (Matic Testnet)</option>
+                </select>
+              </div>
+              <div class="the-buttons my-3">
+                <button class="btn btn-primary col-md-4" id="btn-get-nfts">Get NFTs</button>
+                <button class="btn btn-primary col-md-4 clearButton" name="tableOfNFTs">Clear NFTs</button>
+              </div>
+              <div id="tableOfNFTs" class="table-responsive d-flex flex-wrap container"></div>
+            </div>
+
+          </div>
+
+          <div id="section2">
+            <div id="transferETH">
+              <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                  <h2>Transfer ETH</h2>
+                  <h4>Not Mobile Responsive Yet</h4>
+
+                  <p>This function will allow you to transfer ETH between accounts.<br/>
+                    Make sure your metamask is logged into the account and chain you want to use<br/>
+                    If you are on the Rinkeby chain, this will be a Rinkeby transaction<br/>
+                    If you are on the Ropsten chain, this will be a Ropsten transaction<br/>
+                    If you are on the Ethereum Mainnet, this will be a mainnet transaction</p>
+                </div>
+              </div>
+              <div id="TransferETHSection" class="container">
+                <div class="form-group col-md-12">
+                  <input type="number" step="0.01" class="form-control" id="amountOfETH"
+                    placeholder="How much ETH to transfer?">
+                </div>
+                <div class="form-group col-md-12">
+                  <input type="text" class="form-control" id="addressToReceive" placeholder="Who gets the money?">
+                  <small class="form-text text-muted">Please choose correctly to avoid losing your coins</small>
+                  <button id="ETHTransferButton" type="submit" class="btn btn-primary  my-3">GoGoGo</button>
+                </div>
+                <p>Address to receive: 0xf67173BCD45c640C6a5573bE86fe267B3F9Fb65D</p>
+              </div>
+            </div>
+
+            <div id="transferERC20" >
+              <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <h2>Transfer ERC20</h2>
+                    <h4>Not Mobile Responsive Yet</h4>
+
+                </div>
+              </div>
+              <div class="d-flex">
+
+                <div id="TransferERC20Section" class="container col-md-6">
+                  <div class="form-group col-md-12 mb-3">
+                    <label for="ERC20TransferAmount">How many ERC20 tokens would you like to transfer?</label>
+                    <input type="number" step="0.01" class="form-control" id="ERC20TransferAmount" placeholder="Eg: 1">
+                  </div>
+                  <div class="form-group col-md-12 mb-3">
+                    <label for="ERC20TransferAddress">Which address do you want to send the tokens to? </label>
+                    <input type="text" class="form-control" id="ERC20TransferAddress" placeholder="Receiver address">
+                  </div>
+
+                  <div class="form-group col-md-12 mb-3">
+                    <label for="ERC20TransferDecimals">How many decimals does the token you want to send have? </label>
+                    <input type="number" step="1" class="form-control" id="ERC20TransferDecimals"
+                      placeholder="Token decimals">
+                  </div>
+                  <div class="form-group col-md-12 mb-3">
+                    <label for="ERC20TransferContract">What's the ERC20 token contract address? </label>
+                    <input type="text" class="form-control" id="ERC20TransferContract"
+                      placeholder="Token contract address?">
+                  </div>
+                  <button id="ERC20TransferButton" type="submit" class="btn btn-primary col-md-12">GoGoGo</button>
+                </div>
+
+
+
+                <div class="container mt-3 col-md-6">
+                  <a class="btn btn-secondary col-12" data-bs-toggle="collapse" href="#multiCollapseExample1"
+                    role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Unsure of contract address
+                    or decimals? Click me</a>
+                  <div class="row">
+                    <div class="col-md-12 mt-3">
+                      <div class="collapse multi-collapse" id="multiCollapseExample1">
+                        <div>
+                          <p>Choose the chain you need (eg rinkeby, ropsten, matic) and choose the symbol (eg LINK, be
+                            warned that this is case sensitive).</p>
+                          <p>We will scan the tokens you have on that chain and retrieve the metadata and put it into the
+                            search for you.</p>
+                          <div class="form-group col-md-12">
+                            <input type="text" class="form-control" id="ERC20MetadataChain" placeholder="Token chain?">
+                          </div>
+                          <div class="form-group col-md-12">
+                            <input type="text" class="form-control" id="ERC20MetadataSymbol" placeholder="Token symbol?">
+                          </div>
+                        </div>
+                        <button id="ERC20MetadataSearch" type="submit" class="btn btn-secondary">Find Metadata</button>
+                        <div id="ERC20Metadata"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr>
+              <div class="container">
+                <div class="table-responsive">
+                  <table class="table" id="transferERC20BalanceTable">
+                    <thead>
+                      <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Symbol</th>
+                        <th scope="col">Balance</th>
+                        <th scope="col">Decimals</th>
+                        <th scope="col">Contract Address</th>
+                        <th scope="col">Transfer</th>
+                      </tr>
+                    </thead>
+                    <tbody id="transferERC20Balances">
+
+                    </tbody>
+                  </table>
+                  <button id="transferERC20GetBalances" class="btn btn-secondary col-md-12">Get balances</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="transferNFTs">
+              <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                  <h2>Transfer NFTs</h2>
+                  <h4>Not Mobile Responsive Yet</h4>
+
+                </div>
+              </div>
+              
+              <div class="container">
+                <div class="form-group col-md-6">
+                  <select class="form-select" aria-label="Default select example" id="nft-transfer-type">
+                    <option selected>Type</option>
+                    <option value="erc1155">ERC1155</option>
+                    <option value="erc721">ERC721</option>
+                  </select>
+                </div>
+                <div class="form-group col-md-6">
+                  <input type="text" class="form-control" id="nft-transfer-receiver" placeholder="Receiver?">
+                </div>
+                <div class="form-group col-md-6">
+                  <input type="text" class="form-control" id="nft-transfer-contract-address" placeholder="Contract Address">
+                </div>
+                <div class="form-group col-md-6">
+                  <input type="text" class="form-control" id="nft-transfer-token-id" placeholder="Token id">
+                </div>
+                <div class="form-group col-md-6">
+                  <input type="text" class="form-control" id="nft-transfer-amount" placeholder="Amount to send?">
+                </div>
+                <button class="btn btn-primary col-md-6" id="btn-transfer-selected-nft">Transfer NFT</button>
+                <hr>
+                <div class="col-md-6 offset-md-3 my-3 d-flex justify-content-center">
+                  <select id="nft-chain2" class="form-select">
+                    <option selected>Which chain?</option>
+                    <option value="eth">Ethereum Mainnet</option>
+                    <option value="ropsten">Ropsten</option>
+                    <option value="rinkeby">Rinkeby</option>
+                    <option value="goerli">Goerli </option>
+                    <option value="kovan">Kovan </option>
+                    <option value="bsc">Binance Smart Chain (main)</option>
+                    <option value="bsc testnet">Binance Smart Chain (test)</option>
+                    <option value="matic">Polygon (Matic) Mainnet</option>
+                    <option value="mumbai">Mumbai (Matic Testnet)</option>
+                  </select>
+                </div>
+                <button class="btn btn-secondary col-md-4" id="btn-get-transactions2">Get NFTs</button>
+                <!-- <button class="btn btn-primary col-md-4 clearButton" name="tableOfNFTs2">Clear NFTs</button> -->
+                <div id="tableOfNFTs2">
+                  <div id="NFTtable2" class="d-flex flex-wrap"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- <div id="section3"> -->
+            <div id="portfolioTracker">
+              <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <h2>Portfolio Tracker</h2>
+                    <h4>Not Mobile Responsive Yet</h4>
+                    <p>Use this to keep a track of the value of your portfolio. You may have various tokens and coins spread out in various wallets and protocols and it's tricky to get an overall 'balance' of the collection. So you can use this tool to add the tokens you have (current displays tokens from the ~top250 on coingecko). </p>
+                    <p>You MUST save your changes, otherwise you will lose your progress if the app refreshes.</p>
+                    <p>You can recall your portfolio when you are logged in with the relevant MetaMask account you used to create the portfolio</p>
+                    
+                </div>
+              </div>
+              <div class="container main-buttons d-flex col-md-6 justify-content-around">
+                <button class="btn btn-secondary button-group" id="btn-recall">Recall Tokens</button>
+                <button class="btn btn-secondary button-group" id="btn-add">Add Token</button>
+                <button class="btn btn-secondary button-group" id="btn-save">Save Changes</button>
+              </div>
+              
+              <div class="appBody container">
+                <div class="appContentHeader"></div>
+                <div class="appContent"></div>
+              </div>
+              
+              <div id="portfolio-value" class="container">
+                <div class="mt-4" id="values"></div>
+              </div>           
+            </div>
+            
+            <div id="buyCrypto">
+              <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                  <h2>Buy Crypto With Fiat</h2>
+                  <p class="h6">Go to <a target="_blank" rel="noreferrer noopener" href="https://onramper.com/">https://onramper.com/</a> and register for an API key</p>
+                </div>
+              </div>
+              <div class="container">
+                
+                <div id="buyCrypto-iframe" class="table-responsive">
+                  <!-- <iframe id="fiat-iframe" src="" frameborder="0"  allow="accelerometer; autoplay; camera; gyroscope; payment"></iframe> -->
+                  <h3>Does not load in an iframe</h3>
+                  <p>This example uses a test key, which means it will not let you complete a live transaction. If you want to complete real transactions, you will need to register with On Ramper, complete the KYC, register for live keys and update the code from your end.</p>
+                  <button class="btn btn-secondary button-group" id="launch-onramper">Buy Crypto</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="swapTokens">
+              <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                  <h2>The DEX - Swap Tokens</h2>
+                  <h4>Not Mobile Responsive Yet</h4>
+                  <p>This is the 1inch plugin<br/>
+                     I've ordered the tokens in alphabetical order<br/>
+                     I've also added a search function</p>
+                     <h4>Click the arrows to choose your tokens</h4>
+
+                </div>
+              </div>
+              <div class="container">
+
+                <div class="the-buttons">
+                </div>
+                <div id="swapTokenContent" class="table-responsive d-flex flex-wrap">
+                  <div class="container">
+                    <div class="row">
+                        <div class="col col-md-6 offset-md-3" id="window">
+                            <h4>Swap</h4>
+                            <div id="form">
+                                <div class="swapbox">
+                                    <div class="swapbox_select token_select" id="from_token_select">
+                                        <img class="token_image" id="from_token_img" src="select.png">
+                                        <span id="from_token_text"></span>
+                                    </div>
+                                    <div class="swapbox_select">
+                                        <input class="number form-control" placeholder="amount" id="from_amount">
+                                    </div>
+                                </div>
+                                <div class="swapbox">
+                                    <div class="swapbox_select token_select"  id="to_token_select">
+                                        <img class="token_image" id="to_token_img" src="select.png">
+                                        <span id="to_token_text"></span>
+                                    </div>
+                                    <div class="swapbox_select">
+                                        <input class="number form-control" placeholder="amount" id="to_amount" >
+                                    </div>
+                                </div>
+                                <div>Estimated Gas: <span id="gas_estimate"></span></div>
+                                <button disabled class="btn btn-large btn-primary btn-block" id="swap_button">
+                                    Swap
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal" id="token_modal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <input class="form-control" type="text" placeholder="Select Token" id="token-search">
+                          <button id="modal_close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <div id="token_list"></div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                </div>
+
+              </div>
+            </div>
+            
+            <div id="webhooks">
+              <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                  <h2>TradingView Alerts</h2>
+                </div>
+              </div>
+              <div class="container">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime modi architecto est porro, repellendus perspiciatis eum corrupti recusandae velit molestias inventore laborum praesentium in ad minima error quae rerum fugiat?</p>
+  
+                <div class="the-buttons">
+                  <button class="btn btn-primary col-md-4" id="btn-webhooks">Start Swapping</button>
+                </div>
+                <div id="webhookContent" class="table-responsive d-flex flex-wrap"></div>
+              </div>
+            </div>
+          <!-- </div> -->
+        </main>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <a href="https://cryptotoolkit.uk/apps/index.html" class="text-muted">Back to the apps</a>
+      </div>
+  </footer>
+      
+</div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
+      integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
+      crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
+      integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
+      crossorigin="anonymous"></script>
+    <script src="dashboard.js"></script>
+    <script src="tokens.js"></script> 
+    <script src="main.js"></script>
+    <script src="dex.js"></script>
+    <script src="portfolio-tracker.js"></script>
+  </body>
+</html>

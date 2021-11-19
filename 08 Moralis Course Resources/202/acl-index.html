@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USER REGISTER / LOGIN</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/moralis/dist/moralis.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- This <style> element below is not required -->
+    <style>
+        pre {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            line-height: 60px;
+            background-color: #f5f5f5;
+        }
+    </style>
+    <!-- and can be removed -->
+</head>
+
+<body>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">USER REGISTER / LOGIN</h1>
+            <h2 id="logged-in-user" class="h5"></h2>
+            <button id="logout_button">Logout</button>
+            <button id="login_button">Sign in with MetaMask</button>
+            <div id="login_buttons" class="my-5">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password">
+                <button id="login_button2">Login</button>
+                <button id="register_button">Register</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+
+
+        <div class="my-4" id="content">
+            <div class="h6">
+                <textarea name="new-comment" id="new-comment" cols="30" rows="10"></textarea>
+            </div>
+            <button class="btn btn-primary btn-large" onclick="postComment()">Comment</button>
+            <div id="comment-section" class="my-5">
+                <p>Comments will appear here</p>
+            </div>
+            <div>
+
+            </div>
+        </div>
+        <div>
+
+        </div>
+        <h4>User 1 </h4>
+        <h6>catherine33 (abc123)</h6>
+        <hr>
+        <h4>User 2</h4>
+        <h6>chris33 (abc123)</h6>
+        <hr>
+        <h4>User 2</h4>
+        <h6>user101 (abc123)</h6>
+    </div>
+
+
+    <!-- These are the functions, which should sit inside an external .js file -->
+    <script>
+
+        // (async function () {
+        //     const serverUrl = "SERVER_URL"
+        //     const appId = "APP_ID"
+        //     await Moralis.start({ serverUrl, appId })
+        // })()
+
+        // Initialise server
+
+        const serverUrl = "SERVER_URL"
+        const appId = "APP_ID"
+        Moralis.start({ serverUrl, appId })
+
+
+        async function postComment() {
+            let Note = Moralis.Object.extend('Note')
+            let newNote = new Note()
+
+            let noteUser = Moralis.User.current()
+            let commentContent = document.getElementById('new-comment').value
+            if(commentContent === ""){return alert("ERROR: empty note")}
+
+            newNote.set('content', commentContent)
+            newNote.set('noteUser', noteUser)
+            newNote.set('writer', noteUser.get('username'));
+            newNote.setACL(new Moralis.ACL(Moralis.User.current()));    
+            await newNote.save()
+            document.getElementById('new-comment').value = "";
+            renderComments();
+        }
+
+        // You can call this function to create a new role
+        async function createNewRole(_name, PRA, PWA) {
+            let user = Moralis.User.current()
+
+            let newACL = new Moralis.ACL()
+            newACL.setPublicReadAccess(PRA)
+            newACL.setPublicWriteAccess(PWA)
+
+            let rolesQuery = new Moralis.Query(Moralis.Role)
+            rolesQuery.equalTo('name', _name)
+
+            let role = await rolesQuery.first()
+
+            if (role) {
+                role.getUsers().add(user)
+                role.save()
+            } else {
+                let newRole = new Moralis.Role(_name, newACL)
+                newRole.save()
+                role = await rolesQuery.first()
+                role.getUsers().add(user)
+                role.save()
+            }
+        }
+
+        async function runCode() {
+            let user = Moralis.User.current();
+
+            if (user) {
+                let Note = Moralis.Object.extend('Note')
+            }
+        }
+
+        async function renderComments() {
+            let commentSection = document.getElementById('comment-section')
+            commentSection.innerText = "";
+            let result;
+
+            try {
+                result = await Moralis.Cloud.run("getData", {});
+            } catch (error) {
+                commentSection.innerHTML = `
+                            <p>No comments, you may not have permission to view them</p>
+                            `
+                return;
+            }
+            if (result) {
+                for (let i = 0; i < result.length; i++) {
+                    let _user = result[i].attributes.writer;
+                    console.log(result[i])
+                    const content = document.createElement("div")
+                    content.innerHTML = `
+                    <h6>${result[i].get('content')}</h6>
+                    <p>(Posted by ${_user}: ${result[i].get('createdAt').toLocaleString()})</p>
+                                    <hr/>
+                                    `
+                    commentSection.appendChild(content)
+                }
+            }
+        }
+
+        async function login() {
+            try {
+                currentUser = Moralis.User.current();
+                if (!currentUser) {
+                    currentUser = await Moralis.authenticate();
+                    checkUser();
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        // Logout Function - log out a user with one line of code
+        async function logout() {
+            await Moralis.User.logOut();
+            checkUser();
+        }
+
+
+
+        // Register with username/password + check user
+        async function register() {
+
+            // Get the user credential
+            const _username = document.getElementById('username').value;
+            const _password = document.getElementById('password').value;
+
+            // Create a new user and set username and password attributes
+            const user = new Moralis.User();
+            user.set("username", _username);
+            user.set("password", _password);
+
+            // Sign them up with one line of code
+            try {
+                await user.signUp();
+            } catch (error) {
+                alert("Error: " + error.code + " " + error.message);
+            }
+            checkUser();
+        }
+
+        // Sign in with username/password + check user
+        async function userSignIn() {
+            const user = Moralis.User.current();
+            if (!user) {
+                const _username = document.getElementById('username').value;
+                const _password = document.getElementById('password').value;
+
+                // Log them in with one line of code
+                try {
+                    const user = await Moralis.User.logIn(_username, _password);
+                } catch (error) {
+                    alert("Error: " + error.code + " " + error.message);
+                }
+            } else alert('A user is already logged in');
+
+            checkUser();
+        }
+
+        // Check the user status and show/hide content depending on if they are logged in or not
+        function checkUser() {
+            runCode()
+            currentUser = Moralis.User.current();
+            if (currentUser) {
+                renderComments();
+                document.getElementById("login_button").style.display = "none";
+                document.getElementById("logout_button").style.display = "block";
+                document.getElementById("content").style.display = "block";
+                document.getElementById("login_buttons").style.display = "none";
+                document.getElementById("logged-in-user").innerText = `Logged in as: ${currentUser.get('username')}`
+
+            } else {
+                document.getElementById("logged-in-user").innerText = `Not logged in`
+                document.getElementById("login_button").style.display = "block";
+                document.getElementById("logout_button").style.display = "none";
+                document.getElementById("content").style.display = "none";
+                document.getElementById("login_buttons").style.display = "block";
+            }
+        }
+
+        // Button connections
+        document.getElementById("login_button").onclick = login;
+        document.getElementById("logout_button").onclick = logout;
+        document.getElementById("login_button2").onclick = userSignIn;
+        document.getElementById("register_button").onclick = register;
+
+        // button.addEventListener("click", addListAfterClick);
+
+        checkUser();
+
+    </script>
+</body>
+
+</html>
