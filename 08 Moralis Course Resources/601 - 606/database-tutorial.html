@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- The Header -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DATABASE TUTORIALS</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://unpkg.com/moralis/dist/moralis.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+
+<body>
+    <div id="the-app">
+        <!-- Jumbotron -->
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <h1 class="display-4">DATABASE TUTORIALS</h1>
+                <button id="logout_button">Logout</button>
+                <button id="login_button">Sign in with MetaMask</button>
+            </div>
+        </div>
+
+        <!-- Body content -->
+        <div class="container">
+            <div class="my-4" id="content">
+                <ul class="list-group">
+                    <ol class="list-group-item">Creating, retrieving, updating, deleting</ol>
+                    <ol class="list-group-item">Rendering from database</ol>
+                    <ol class="list-group-item">Looping through results</ol>
+                    <ol class="list-group-item">Stacking multiple queries</ol>
+                    <ol class="list-group-item">Experimenting with query constraints</ol>
+                </ul>
+            </div>
+            <button class="btn btn-primary" onclick="createUnit()">Run createUnit</button>
+            <button class="btn btn-primary" onclick="getUnits()">Run getUnits</button>
+        </div>
+        <div class="my-5  d-flex flex-wrap" id="the-content"></div>
+    </div>
+
+    <!-- Initialise Moralis -->
+    <script>
+        const serverUrl = "https://aegk8vmdrtol.bigmoralis.com:2053/server"
+        const appId = "YT8QJ8naY8HxsO2hfK10mrWsjPH5ZJJtliq1DG3e"
+        Moralis.start({ serverUrl, appId })
+        
+        login = async () => {
+            try {
+                currentUser = Moralis.User.current();
+                if (!currentUser) {
+                    currentUser = await Moralis.authenticate();
+                    checkUser();
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        logout = async () => {
+            await Moralis.User.logOut();
+            checkUser();
+        }
+
+        checkUser = () => {
+            currentUser = Moralis.User.current();
+            if (currentUser) {
+                document.getElementById("login_button").style.display = "none";
+                document.getElementById("logout_button").style.display = "block";
+                document.getElementById("content").style.display = "block";
+            } else {
+                document.getElementById("login_button").style.display = "block";
+                document.getElementById("logout_button").style.display = "none";
+                document.getElementById("content").style.display = "none";
+            }
+        }
+
+        // Listeners & Initialisation
+        document.getElementById("login_button").onclick = login;
+        document.getElementById("logout_button").onclick = logout;
+        checkUser();
+
+        // The simple version of extending the class
+        /*
+        const Unit = Moralis.Object.extend('Unit')
+        let unit = new Unit();
+            unit.set('user', Moralis.User.current());
+            unit.set('name', 'choose a name');
+            unit.set('abilities', '[array,of,abilities]');
+            unit.set('HP', 'between 20 - 65');
+            unit.set('MP', 'between 4 - 6');
+            unit.set('XP', 'between 30 - 60');
+            unit.set('upkeep', 'between 0 - 3');
+            unit.set('melee', `in format of 8-3`);
+            unit.set('ranged', `in format of 8-3`);
+            unit.set('accuracy', `random percentage`);
+            unit.save();
+        */
+       // So how do we randomise all that stuff?
+
+        // Extending class with prototype methods and functions
+        let Unit = Moralis.Object.extend('Unit', {
+            getRandomNumber: function (min, max) {
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            },
+            getRandomName: function () {
+                const first = ["Hope", "Launa", "Katherine", "Walker", "Moses", "Tayna", "Rosia", "Yahaira", "Tommy", "Elwanda", "Clorinda", "Sheron", "Kayla", "Clementina", "Rene", "Rex", "Kathy", "Latoya", "Shirleen", "Shoshana"];
+                const second = ["tor", "sson", "", "dotor", "ninho", "tastic", "ly", "dor", "den", "ray"];
+                const getRandomNumber = (max) => Math.floor(Math.random() * max);
+                return `${first[getRandomNumber(first.length)]}${second[getRandomNumber(second.length)]}`;
+            },
+            shuffle: function (array) {
+                let i = Math.floor(Math.random() * (array.length));
+                let j = Math.floor(Math.random() * (array.length));
+                while (i === j) { j = Math.floor(Math.random() * (array.length)); }
+                return [array[i], array[j]];
+            },
+            getAbilities: function () {
+                const abilities = ["Intelligent", "Quick", "Resilient", "Strong", "Dextrous", "Loyal", "Brave"]
+                let array = this.shuffle(abilities)
+                if (array[0] === array[1]) { array = this.shuffle(abilities) }
+                return array;
+            },
+        },
+            {
+                create: function () {
+                    let unit = new Unit();
+                    unit.set('user', Moralis.User.current());
+                    unit.set('name', unit.getRandomName());
+                    unit.set('abilities', unit.getAbilities());
+                    unit.set('HP', unit.getRandomNumber(20, 65));
+                    unit.set('MP', unit.getRandomNumber(4, 6));
+                    unit.set('XP', unit.getRandomNumber(30, 60));
+                    unit.set('upkeep', unit.getRandomNumber(0, 3));
+                    unit.set('melee', `${unit.getRandomNumber(1, 8)}-${unit.getRandomNumber(1, 4)}`);
+                    unit.set('ranged', `${unit.getRandomNumber(1, 8)}-${unit.getRandomNumber(1, 4)}`);
+                    unit.set('accuracy', `${unit.getRandomNumber(2, 7) * 10}%`);
+
+                    // Set ACL
+                    // const user = Moralis.User.current()
+                    // unit.setACL(new Moralis.ACL(user))
+                    
+                    // Set NEW ACL
+                    const user = Moralis.User.current()
+                    let acl = new Moralis.ACL()
+                    acl.setReadAccess(user, true)
+                    acl.setWriteAccess(user, true)
+                    acl.setRoleReadAccess("TheAdmin", true)
+                    acl.setRoleWriteAccess("TheAdmin", true)
+                    unit.setACL(acl)
+                    
+                    // Save
+                    unit.save();
+                }
+            });
+
+        createUnit = async () => {
+            await Unit.create();
+            getUnits();
+        }
+
+        // CreateRole
+        createRole = async () => {
+            // ACL
+            let roleACL = new Moralis.ACL()
+            roleACL.setPublicReadAccess(true)
+            roleACL.setPublicWriteAccess(true)
+
+            // Create role
+            let newRole = new Moralis.Role("TheAdmin", roleACL)
+            newRole.save()
+        }
+
+        // AddUsers to Role
+        addUsersToRole = async (_name) => {
+            let roleQuery = new Moralis.Query(Moralis.Role)
+            roleQuery.equalTo("name", _name)
+            let result = await roleQuery.first()
+            if(result){
+                result.getUsers().add(Moralis.User.current())
+                result.save()
+            }
+        }
+
+        // SIMPLE HTML RENDER
+
+        getUnits = async () => {
+
+            let query = new Moralis.Query(Unit);
+            let myUnits = await query.find();
+
+            let content = document.getElementById('the-content')
+            content.innerHTML = ""
+            
+            myUnits.forEach(unit => {
+                let card = document.createElement('div');
+                card.className = "card"
+                card.innerHTML = `
+                <div class="card-body">
+                <h4 class="card-title">${unit.get('name')}</h4>
+                <ul class="list-group">
+                    <li class="list-group-item">Movement Points: ${unit.get('MP')}</li>
+                    <li class="list-group-item">Hit Points: ${unit.get('HP')}</li>
+                    <li class="list-group-item">Experience Points: ${unit.get('XP')}</li>
+                    <li class="list-group-item">Melee Attack: ${unit.get('melee')}</li>
+                    <li class="list-group-item">Ranged Attack: ${unit.get('ranged')}</li>
+                    <li class="list-group-item sm">${unit.id}</li>
+                </ul>
+                </div>
+                `
+                content.appendChild(card);
+            })
+        }
+
+        // The Moralis save() method is clever
+        // It will only send the data that has actually changed
+        // This avoids unneccesary data transfers 
+
+   
+        // Three methods: add, addUnique, remove
+        // add will add to an array
+        // addUnique adds just once - regardless of call repetition
+        // remove will remove it wfrom an array if it exists
+
+        addAbility = async () => {
+
+            let query = new Moralis.Query(Unit);
+            let myUnit = await query.get('BkH6J4HXd4aEQsPsif5VYeqF');
+
+            myUnit.add('abilities', 'speed');
+            myUnit.add('abilities', 'speed'); // This is added twice
+            myUnit.save();
+            getUnits();
+        }
+        // addAbility();
+
+        addUniqueAbility = async (unitId) => {
+            let query = new Moralis.Query(Unit);
+            let myUnit = await query.get(unitId);
+
+            myUnit.addUnique('abilities', 'Determined');
+            myUnit.addUnique('abilities', 'Determined'); // This once gets ignored
+            await myUnit.save();
+            getUnits();
+        }
+        // addUniqueAbility();
+
+        removeAbility = async (unitId, abilities) => {
+            let query = new Moralis.Query(Unit);
+            let myUnit = await query.get(unitId);
+
+            // myUnit.remove('abilities', 'speed');
+            myUnit.remove(abilities);
+            // Only need to call it once - it will remove ALL instances of that ability for that unit
+            myUnit.remove('abilities', 'Determined');
+            await myUnit.save();
+            getUnits();
+        }
+        // removeAbility();
+
+        unsetProperty = async () => {
+            let query = new Moralis.Query(Unit);
+            let myUnit = await query.get('BkH6J4HXd4aEQsPsif5VYeqF');
+
+            // myUnit.unset('ranged');
+            // myUnit.set('ranged', "7-1");
+            await myUnit.save();
+            getUnits();
+        }
+        // unsetProperty();
+
+        destroyObject = async (unitId) => {
+            // It will delete the object, with no confirmation!! WARNING
+
+            let query = new Moralis.Query(Unit);
+            let myUnit = await query.get(unitId);
+            await myUnit.destroy();
+            getUnits();
+        }
+
+        // This is just an example of a query that i've invoked when the app loads
+        runQuery = async () => {
+            // Part 4
+            let query = new Moralis.Query(Unit);
+            // query.equalTo('user', Moralis.User.current())
+            query.greaterThan('HP', 22);
+            query.lessThan('XP', 41);
+            
+            // Subscription Example
+            let subscriptionQuery1 = await query.subscribe();
+            subscriptionQuery1.on('create', (object) => {
+                console.log('new sub opened')
+                console.log(object)
+            })
+
+            let results = await query.find()
+
+            let queryArray = []
+
+            for(all of results) {
+                queryArray.push({
+                    name: all.attributes.name,
+                    HP: all.attributes.HP,
+                    XP: all.attributes.XP,
+                })
+            }
+            console.log(queryArray)
+        }
+        runQuery();
+
+    </script>
+</body>
+
+</html>
