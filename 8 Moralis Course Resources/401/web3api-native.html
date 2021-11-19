@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- The Header -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB3API</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://unpkg.com/moralis/dist/moralis.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+
+<body>
+    <div id="the-app">
+        <!-- Jumbotron -->
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <h1 class="display-4">WEB3API</h1>
+                <button id="logout_button">Logout</button>
+                <button id="login_button">Sign in with MetaMask</button>
+            </div>
+        </div>
+
+        <!-- Body content -->
+        <div class="container">
+            <div class="my-4" id="content">
+
+                <!-- GET BLOCK -->
+                <div class="border-bottom py-4" id="get-block">
+                    <div class="col-md-6 my-4 container">
+                        <h3>Get Block Data</h3>
+                        <p>Retrieve the contents of a block by block hash. Returns a block object (asynchronous).</p>
+                        <div class="my-4">
+                            <select class="form-select" id="select-getBlock">
+                                <option selected>Which chain (required)?</option>
+                                <option value="eth">Ethereum Mainnet</option>
+                                <option value="ropsten">Ropsten</option>
+                                <option value="rinkeby">Rinkeby</option>
+                                <option value="goerli">Goerli </option>
+                                <option value="kovan">Kovan </option>
+                                <option value="bsc">Binance Smart Chain (main)</option>
+                                <option value="bsc testnet">Binance Smart Chain (test)</option>
+                                <option value="matic">Polygon (Matic) Mainnet</option>
+                                <option value="mumbai">Mumbai (Matic Testnet)</option>
+                            </select>
+                            <input type="text" id="getBlock-block" class="form-control" placeholder="choose a block number (required)">
+                        </div>
+                        <button class="btn btn-primary" onclick="getBlock()">Get Block Data</button>
+                    </div>
+                    <div class="col-md-12">
+
+                        <div id="content-getBlock" class="my-4 h6 text-break"></div>
+                    </div>
+
+                </div>
+
+                <!-- GET DATE TO BLOCK -->
+                <div class="border-bottom " id="get-date-to-block">
+                    <div class="col-md-6 my-4 container">
+                        <h3>Get Date To Block</h3>
+                        <p>Retrieve the closest block of the provided date (asynchronous).</p>
+                        <div>
+                            <select class="form-select" id="select-getDateToBlock">
+                                <option selected>Which chain (required)?</option>
+                                <option value="eth">Ethereum Mainnet</option>
+                                <option value="ropsten">Ropsten</option>
+                                <option value="rinkeby">Rinkeby</option>
+                                <option value="goerli">Goerli </option>
+                                <option value="kovan">Kovan </option>
+                                <option value="bsc">Binance Smart Chain (main)</option>
+                                <option value="bsc testnet">Binance Smart Chain (test)</option>
+                                <option value="matic">Polygon (Matic) Mainnet</option>
+                                <option value="mumbai">Mumbai (Matic Testnet)</option>
+                            </select>
+                        </div>
+                        <div class="dflex justify-content-center">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text" id="">Date or timestamp</span>
+                                </div>
+                                <input type="date" id="getDateToBlock-date1" class="form-control" placeholder="choose a date">
+                                <input type="text" id="getDateToBlock-date2" class="form-control" placeholder="or choose a timestamp">
+                            </div>
+                        </div>
+                        <br>
+                        <button class="btn btn-primary" onclick="getDateToBlock()">Get Date To Block</button>
+                        <div id="content-getDateToBlock" class="my-4 text-break"></div>
+                    </div>
+                </div>
+                
+                <!-- GET LOGS BY ADDRESS -->
+                <div class="border-bottom py-4" id="get-logs-by-address">
+                    <div class="col-md-6 my-4 container">
+                        <h3>🔥 Get Logs By Address</h3>
+                        <p>Retrieve the logs from an address (asynchronous). </p>
+                        <div class="my-4">
+                            <select class="form-select" id="getLogsByAddress-chain">
+                                <option selected>Which chain (required)?</option>
+                                <option value="eth">Ethereum Mainnet</option>
+                                <option value="ropsten">Ropsten</option>
+                                <option value="rinkeby">Rinkeby</option>
+                                <option value="goerli">Goerli </option>
+                                <option value="kovan">Kovan </option>
+                                <option value="bsc">Binance Smart Chain (main)</option>
+                                <option value="bsc testnet">Binance Smart Chain (test)</option>
+                                <option value="matic">Polygon (Matic) Mainnet</option>
+                                <option value="mumbai">Mumbai (Matic Testnet)</option>
+                            </select>
+                            <input type="text" id="getLogsByAddress-address" class="form-control" placeholder="A smart contract address (required)">
+                            <input type="text" id="from_date-getLogsByAddress" class="form-control" placeholder="The date from where to get the transactions (optional)">
+                            <input type="text" id="to_date-getLogsByAddress" class="form-control" placeholder="Get the transactions to this date (optional)">
+                            <input type="text" id="from_block-getLogsByAddress" class="form-control" placeholder="The minimum block number to get the transactions (optional)">
+                            <input type="text" id="to_block-getLogsByAddress" class="form-control" placeholder=" The maximum block number to get the transactions (optional)">
+                            <input type="text" id="topic0-getLogsByAddress" class="form-control" placeholder="Event topic 0 (optional)">
+                            <input type="text" id="topic1-getLogsByAddress" class="form-control" placeholder="Event topic 1 (optional)">
+                            <input type="text" id="topic2-getLogsByAddress" class="form-control" placeholder="Event topic 2 (optional)">
+                            <input type="text" id="topic3-getLogsByAddress" class="form-control" placeholder="Event topic 3 (optional)">
+                        </div>
+                        <button class="btn btn-primary" onclick="getLogsByAddress()">Get Logs By Address</button>
+                        <div id="content-getLogsByAddress" class="my-4 text-break"></div>
+                    </div>
+
+
+                    <hr />
+                </div>
+
+                <div class="d-flex border-bottom py-4" id="get-contract-events">
+                    <div class="col-md-9">
+                        <h3>Get Contract Events</h3>
+                        <p>Get the events in descending order based on block number. Returns an object with the number
+                            of Contract events and the array of Contract events (asynchronous).</p>
+                        <code>
+                            const options = {<br>
+                                chain: "bsc",<br>
+                                address: "0x...16",<br>
+                                topic: "0x1c411e9a96e071241c2f21f7726b17ae89e3cab4c78be50e062b03a9fffbbad1", <br>
+                                abi: ABI <br>
+                              };<br>
+                              const events = await Moralis.Web3API.native.getContractEvents(options);    
+                        </code>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-primary" onclick="getContractEvents()">Get Contract Events</button>
+                    </div>
+                    <hr />
+                </div>
+
+                <div class="d-flex border-bottom py-4" id="get-nft-transfers-by-block">
+                    <div class="col-md-9">
+                        <h3>Get NFT Transfers By Block</h3>
+                        <p>Retrieve the contents of a block by block hash. Returns a block object (asynchronous).</p>
+                        <code>
+                            const options = { chain: "bsc", block_number_or_hash: "11284830" };<br>
+                            const NFTTransfers = await Moralis.Web3API.native.getNFTTransfersByBlock(options);
+                        </code>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-primary" onclick="getNFTTransfersByBlock()">Get NFT Transfers By
+                            Block</button>
+                    </div>
+                    <hr />
+                </div>
+
+                <div class="d-flex border-bottom py-4" id="get-transaction">
+                    <div class="col-md-9">
+                        <h3>Get Transaction</h3>
+                        <p>Get the transaction by transaction hash. Returns a transaction object (asynchronous). Make
+                            sure to choose a transaction that's been indexed (a brand new transaction may not have been
+                            indexed)</p>
+                        <code>
+                            const options = { chain: "bsc", block_number_or_hash: "11284830" };<br>
+                            const NFTTransfers = await Moralis.Web3API.native.getNFTTransfersByBlock(options);
+                        </code>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-primary" onclick="getTransaction()">Get Transaction</button>
+                    </div>
+                    <hr />
+                </div>
+
+                <div class="d-flex border-bottom py-4" id="run-contract-function">
+                    <div class="col-md-9">
+                        <h3>Run Contract Function</h3>
+                        <p>Retrieve the contents of a block by block hash. Returns a block object (asynchronous).</p>
+                        <code>
+                            const options = {<br>
+                                chain: "bsc",<br>
+                                address: "0x...16",<br>
+                                function_name: "allowance",<br>
+                                abi: ABI <br>
+                              };<br>
+                              const allowance = await Moralis.Web3API.native.runContractFunction(options);
+                        </code>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-primary" onclick="runContractFunction()">Run Contract Function</button>
+                    </div>
+                    <hr />
+                </div>
+
+
+            </div>
+            <div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Initialise Moralis -->
+    <script>
+        Moralis.initialize("flHBF4X3XplDQLzFtyKQN5T3Dp5Ce0c8bcnLgG4n");
+        Moralis.serverURL = "https://gas3vdyjdiyn.moralishost.com:2053/server";
+    </script>
+
+    <!-- Basic Functions -->
+    <script>
+        // INITIALISATION CODE & MORALIS LOGIN/LOGOUT CODE
+        // (async function () {
+        //     const serverUrl = "SERVER_URL"
+        //     const appId = "APP_ID"
+        //     await Moralis.start({ serverUrl, appId })
+        // })()
+
+        const serverUrl = "ENTER_SERVER_URL"
+        const appId = "ENTER_APP_ID"
+        Moralis.start({ serverUrl, appId })
+
+        
+        async function login() {
+            await Moralis.authenticate();
+            checkUser();
+        }
+
+        async function logout() {
+            await Moralis.User.logOut();
+            checkUser();
+        }
+
+        // NATIVE WEB3API FUNCTIONS MORALIS CODE
+        async function getBlock() {
+            let content = document.getElementById('content-getBlock')
+            content.innerHTML = "";
+            const _chain = document.getElementById('select-getBlock').value
+            const _block_number_or_hash = document.getElementById('getBlock-block').value
+
+            const options = { chain: _chain, block_number_or_hash: _block_number_or_hash };
+            const transactions = await Moralis.Web3API.native.getBlock(options);
+            
+            console.log(transactions)
+            Object.keys(transactions).forEach(e=>{
+                let div = document.createElement('div');
+                div.innerHTML = `<p><span class="h5">${e}</span>: ${transactions[e]}</p>`
+                content.appendChild(div);
+            });
+        }
+
+
+        async function getDateToBlock() {
+            let content = document.getElementById('content-getDateToBlock')
+            content.innerHTML = "";
+            let _chain = document.getElementById('select-getDateToBlock').value;
+            let date1 = new Date(document.getElementById('getDateToBlock-date1').value).getTime() / 1000;
+            let date2 = document.getElementById('getDateToBlock-date2').value;
+            
+            let _date;
+            if(date2){_date = date2}else if(date1){_date = date1} else return alert('error in getDateToBlock()')
+            
+            const options = {
+                chain: _chain,
+                date: _date
+                //   date: "1634901514"
+                //   date: "2021-09-29T13:09:15+00:00"
+            };
+            const date = await Moralis.Web3API.native.getDateToBlock(options);
+
+            console.log(date)
+            Object.keys(date).forEach(e=>{
+                let div = document.createElement('div');
+                div.innerHTML = `<p><span class="h5">${e}</span>: ${date[e]}</p>`
+                content.appendChild(div);
+            });
+
+        }
+
+        async function getLogsByAddress() {
+            let content = document.getElementById('content-getLogsByAddress')
+            content.innerHTML = "";
+            let _chain = document.getElementById('getLogsByAddress-chain').value;
+            let _address = document.getElementById('getLogsByAddress-address').value;
+            const options = {
+                address: _address,
+                chain: _chain,
+            };
+            const logs = await Moralis.Web3API.native.getLogsByAddress(options);
+            console.log(logs);
+            Object.keys(logs).forEach(e=>{
+                let div = document.createElement('div');
+                div.innerHTML = `<p><span class="h5">${e}</span>: ${logs[e]}</p>`
+                content.appendChild(div);
+            });
+        }
+
+        async function getContractEvents() {
+
+            console.log('move on');
+
+        }
+
+        async function getNFTTransfersByBlock() {
+
+            const options = { chain: "bsc", block_number_or_hash: "11284830" };
+            const NFTTransfers = await Moralis.Web3API.native.getNFTTransfersByBlock(options);
+            console.log(NFTTransfers);
+
+        }
+
+        async function getTransaction() {
+            console.log('getTransaction clicked')
+            const options = {
+                chain: "ropsten",
+                transaction_hash: "0xb5c584fe72205fbb6ac1b6b9a0e7833b23508790eb1c93970bf03639a09f62e6"
+            };
+            const transaction = await Moralis.Web3API.native.getTransaction(options);
+            console.log(transaction);
+        }
+
+        async function runContractFunction() {
+            /* Older ABI
+            const ABI = [{
+                "constant": true,
+                "inputs": [],
+                "name": "symbol",
+                "outputs": [
+                    {
+                        "internalType": "string",
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            }];
+            */
+            
+            const ABI = [{
+                "constant": true,
+                "inputs": [],
+                "name": "decimals",
+                "outputs": [
+                    {
+                        "internalType": "uint8",
+                        "name": "",
+                        "type": "uint8"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            }];
+
+            const options = {
+                chain: "bsc",
+                address: "0x0eD7e52944161450477ee417DE9Cd3a859b14fD0",
+                function_name: "decimals",
+                abi: ABI
+            };
+            const allowance = await Moralis.Web3API.native.runContractFunction(options);
+            console.log(allowance);
+
+        }
+
+
+        // OLDER FUNCTIONS
+        async function transferNative() {
+            const address = document.getElementById('native-address').value;
+            const amount = document.getElementById('native-amount').value;
+
+            // sending 0.5 ETH
+            const options = {
+                type: "native",
+                amount: Moralis.Units.ETH(amount),
+                receiver: address
+            }
+            let result = await Moralis.transfer(options)
+        }
+
+        async function transferERC20() {
+            const address = document.getElementById('erc20-address').value;
+            const amount = document.getElementById('erc20-amount').value;
+            const contract = document.getElementById('erc20-contract').value;
+            const decimals = document.getElementById('erc20-decimals').value;
+
+            // sending 0.5 ETH
+            const options = {
+                type: "erc20",
+                amount: Moralis.Units.Token(amount, decimals),
+                receiver: address,
+                contractAddress: contract
+            }
+            let result = await Moralis.transfer(options)
+        }
+
+        checkUser = () => {
+        // FUNCTION CLICK LISTENER
+
+            currentUser = Moralis.User.current();
+            if (currentUser) {
+                document.getElementById("login_button").style.display = "none";
+                document.getElementById("logout_button").style.display = "block";
+                document.getElementById("content").style.display = "block";
+            } else {
+                document.getElementById("login_button").style.display = "block";
+                document.getElementById("logout_button").style.display = "none";
+                document.getElementById("content").style.display = "none";
+            }
+        }
+
+        // BUTTON CLICK LISTENERS
+        document.getElementById("login_button").onclick = login;
+        document.getElementById("logout_button").onclick = logout;
+        checkUser();
+    </script>
+
+</body>
+
+</html>
